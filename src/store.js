@@ -7,3 +7,19 @@
 //7. addBoard 메서드는 새로운 보드를 추가합니다.
 //8. removeBoard 메서드는 특정 ID를 가진 보드를 삭제합니다.
 //9. updateBoard 메서드는 특정 ID를 가진 보드를 업데이트합니다.
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+
+export const useBoardStore = create(
+    persist((set) => ({
+    data: [],
+    addBoard: (newTask) => set((state) => ({ data: [...state.data, newTask] })),
+    removeBoard: (id) => set((state) => ({ data:  state.data.filter((item) => ( item.id !== id))})),
+    updateBoard: (editTask) => set((state) => ({ data: state.data.map((item) => (item.id === editTask.id ? editTask : item)),
+        })),
+    }),
+    {
+        name: "board-storage",
+        storage:createJSONStorage(() => localStorage),
+    }
+));
